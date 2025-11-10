@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Test Case</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+          font-family: 'Inter', sans-serif;
+        }
+
+        .header-gradient {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .section-card {
+          background: white;
+          border-radius: 1rem;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+          transition: box-shadow 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .fade-in {
+          animation: fadeIn 0.5s ease-out;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .step-item {
+          position: relative;
+          padding-left: 2.5rem;
+          padding-bottom: 1.5rem;
+        }
+
+        .step-item:last-child {
+          padding-bottom: 0;
+        }
+
+        .step-item::before {
+          content: '';
+          position: absolute;
+          left: 0.75rem;
+          top: 2.5rem;
+          bottom: -0.5rem;
+          width: 2px;
+          background: linear-gradient(to bottom, #e5e7eb, transparent);
+        }
+
+        .step-item:last-child::before {
+          display: none;
+        }
+
+        .step-number {
+          position: absolute;
+          left: 0;
+          top: 0.5rem;
+          width: 2rem;
+          height: 2rem;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3b82f6, #2563eb);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 600;
+          font-size: 0.875rem;
+          box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .tag-input {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.5rem;
+          min-height: 2.75rem;
+          cursor: text;
+        }
+
+        .tag-input:focus-within {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.375rem;
+          padding: 0.25rem 0.625rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 9999px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .tag button {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          width: 1rem;
+          height: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s;
+        }
+
+        .tag button:hover {
+          background: rgba(255, 255, 255, 0.5);
+        }
+
+        .category-badge {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.625rem;
+          border-radius: 0.375rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.025em;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .category-badge:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-badge.selected {
+          box-shadow: 0 0 0 2px white, 0 0 0 4px #667eea;
+        }
+
+        .ai-suggestion {
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+          border-left: 4px solid #f59e0b;
+        }
+
+        .template-card {
+          transition: all 0.3s ease;
+          cursor: pointer;
+          border: 2px solid transparent;
+        }
+
+        .template-card:hover {
+          border-color: #667eea;
+          box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.3);
+          transform: translateY(-2px);
+        }
+
+        .progress-bar {
+          height: 4px;
+          background: #e5e7eb;
+          border-radius: 9999px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+          transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- Header -->
+<header class="header-gradient text-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <i data-feather="plus-circle" class="w-6 h-6"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold">Novo Test Case</h1>
+                </div>
+                <p class="text-blue-100 text-sm">Crie um novo caso de teste detalhado</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="window.location.href='list.html'" class="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-all flex items-center gap-2">
+                    <i data-feather="arrow-left" class="w-4 h-4"></i>
+                    <span>Voltar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Progress Indicator -->
+    <div class="section-card p-6 mb-8 fade-in">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-gray-700">Progresso do Formulário</h3>
+            <span id="progressPercent" class="text-sm font-bold text-purple-600">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Templates Rápidos -->
+    <div class="section-card p-6 mb-8 fade-in">
+        <div class="flex items-center gap-2 mb-4">
+            <i data-feather="zap" class="w-5 h-5 text-yellow-500"></i>
+            <h2 class="text-lg font-bold text-gray-900">Começar com Template</h2>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">Economize tempo usando um template pré-configurado</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="template-card section-card p-4" data-template="login">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                    <i data-feather="log-in" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Autenticação</h3>
+                <p class="text-xs text-gray-600">Login, logout, recuperação de senha</p>
+            </div>
+
+            <div class="template-card section-card p-4" data-template="crud">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                    <i data-feather="database" class="w-5 h-5 text-green-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">CRUD</h3>
+                <p class="text-xs text-gray-600">Criar, ler, atualizar, deletar</p>
+            </div>
+
+            <div class="template-card section-card p-4" data-template="form">
+                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                    <i data-feather="edit-3" class="w-5 h-5 text-purple-600"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1">Formulário</h3>
+                <p class="text-xs text-gray-600">Validação de campos e submissão</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário Principal -->
+    <form id="testCaseForm" class="space-y-8">
+        <!-- Informações Básicas -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="info" class="w-4 h-4 text-purple-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Informações Básicas</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- ID e Título -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            ID do Test Case <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="testCaseId"
+                                name="testCaseId"
+                                placeholder="TC001"
+                                class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Ex: TC001, TC-AUTH-001</p>
+                    </div>
+
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Título <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                placeholder="Ex: Login com credenciais válidas"
+                                class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                        >
+                    </div>
+                </div>
+
+                <!-- Descrição -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Descrição Detalhada
+                    </label>
+                    <textarea
+                            id="description"
+                            name="description"
+                            rows="3"
+                            placeholder="Descreva o objetivo e contexto deste test case..."
+                            class="form-textarea w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none"
+                    ></textarea>
+                </div>
+
+                <!-- Categoria e Prioridade -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Categoria Principal <span class="text-red-500">*</span>
+                        </label>
+                        <select
+                                id="category"
+                                name="category"
+                                class="form-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                        >
+                            <option value="">Selecione uma categoria</option>
+                            <option value="funcional">Funcional</option>
+                            <option value="interface">Interface</option>
+                            <option value="seguranca">Segurança</option>
+                            <option value="performance">Performance</option>
+                            <option value="integracao">Integração</option>
+                            <option value="usabilidade">Usabilidade</option>
+                            <option value="compatibilidade">Compatibilidade</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Prioridade <span class="text-red-500">*</span>
+                        </label>
+                        <select
+                                id="priority"
+                                name="priority"
+                                class="form-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                                required
+                        >
+                            <option value="">Selecione a prioridade</option>
+                            <option value="alta">🔴 Alta</option>
+                            <option value="media">🟡 Média</option>
+                            <option value="baixa">⚪ Baixa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Tags
+                    </label>
+                    <div id="tagInput" class="tag-input">
+                        <input
+                                type="text"
+                                id="tagInputField"
+                                placeholder="Digite e pressione Enter para adicionar tags..."
+                                class="flex-1 min-w-[200px] outline-none border-none bg-transparent"
+                        >
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Ex: autenticação, login, segurança</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pré-condições -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="alert-circle" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Pré-condições</h2>
+            </div>
+
+            <div class="ai-suggestion p-4 rounded-lg mb-4">
+                <div class="flex items-start gap-3">
+                    <i data-feather="lightbulb" class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 mb-1">💡 Dica</p>
+                        <p class="text-sm text-gray-700">Descreva o estado que o sistema deve estar antes de executar o teste. Ex: "Usuário já cadastrado no sistema", "Banco de dados limpo"</p>
+                    </div>
+                </div>
+            </div>
+
+            <textarea
+                    id="precondition"
+                    name="precondition"
+                    rows="3"
+                    placeholder="Ex: Usuário já cadastrado no sistema com e-mail válido"
+                    class="form-textarea w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none"
+            ></textarea>
+        </div>
+
+        <!-- Passos do Teste -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i data-feather="list" class="w-4 h-4 text-purple-600"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900">Passos do Teste</h2>
+                </div>
+                <button
+                        type="button"
+                        id="addStepBtn"
+                        class="px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-all text-sm font-medium flex items-center gap-2"
+                >
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                    Adicionar Passo
+                </button>
+            </div>
+
+            <div class="ai-suggestion p-4 rounded-lg mb-6">
+                <div class="flex items-start gap-3">
+                    <i data-feather="lightbulb" class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 mb-1">💡 Dica</p>
+                        <p class="text-sm text-gray-700">Seja específico e claro. Cada passo deve ter uma ação única. Use verbos no infinitivo: "Acessar", "Clicar", "Informar", "Verificar"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stepsContainer" class="space-y-4">
+                <!-- Step 1 (inicial) -->
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="flex gap-2">
+                        <input
+                                type="text"
+                                placeholder="Descreva o passo do teste..."
+                                class="form-input flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all step-input"
+                        >
+                        <button type="button" class="remove-step-btn p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all hidden">
+                            <i data-feather="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado Esperado -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="check-circle" class="w-4 h-4 text-green-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Resultado Esperado</h2>
+            </div>
+
+            <div class="ai-suggestion p-4 rounded-lg mb-4">
+                <div class="flex items-start gap-3">
+                    <i data-feather="lightbulb" class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 mb-1">💡 Dica</p>
+                        <p class="text-sm text-gray-700">Descreva exatamente o que deve acontecer ao final do teste. Seja mensurável e verificável. Ex: "Sistema exibe mensagem de sucesso", "Usuário é redirecionado para /dashboard"</p>
+                    </div>
+                </div>
+            </div>
+
+            <textarea
+                    id="expectedResult"
+                    name="expectedResult"
+                    rows="3"
+                    placeholder="Ex: O sistema autentica o usuário e redireciona para a tela principal"
+                    class="form-textarea w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none"
+                    required
+            ></textarea>
+        </div>
+
+        <!-- Dados de Teste (Opcional) -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="database" class="w-4 h-4 text-orange-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Dados de Teste (Opcional)</h2>
+            </div>
+
+            <textarea
+                    id="testData"
+                    name="testData"
+                    rows="4"
+                    placeholder="Ex:&#10;E-mail: usuario@exemplo.com&#10;Senha: senha123&#10;&#10;ou formato JSON, CSV, etc."
+                    class="form-textarea w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none font-mono text-sm"
+            ></textarea>
+        </div>
+
+        <!-- Informações Adicionais -->
+        <div class="section-card p-8 fade-in">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="file-text" class="w-4 h-4 text-gray-600"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Informações Adicionais</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Autor
+                    </label>
+                    <input
+                            type="text"
+                            id="author"
+                            name="author"
+                            placeholder="Nome do autor"
+                            class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Tempo Estimado (minutos)
+                    </label>
+                    <input
+                            type="number"
+                            id="estimatedTime"
+                            name="estimatedTime"
+                            placeholder="5"
+                            min="1"
+                            class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                    >
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Observações / Notas
+                    </label>
+                    <textarea
+                            id="notes"
+                            name="notes"
+                            rows="3"
+                            placeholder="Informações adicionais, links úteis, considerações especiais..."
+                            class="form-textarea w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all resize-none"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="section-card p-6 flex items-center justify-between">
+            <button
+                    type="button"
+                    onclick="window.location.href='list.html'"
+                    class="px-6 py-3 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-all font-medium flex items-center gap-2"
+            >
+                <i data-feather="x" class="w-4 h-4"></i>
+                Cancelar
+            </button>
+
+            <div class="flex gap-3">
+                <button
+                        type="button"
+                        id="saveDraftBtn"
+                        class="px-6 py-3 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg transition-all font-medium flex items-center gap-2"
+                >
+                    <i data-feather="save" class="w-4 h-4"></i>
+                    Salvar Rascunho
+                </button>
+
+                <button
+                        type="submit"
+                        class="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 rounded-lg transition-all font-medium flex items-center gap-2 shadow-lg"
+                >
+                    <i data-feather="check" class="w-4 h-4"></i>
+                    Criar Test Case
+                </button>
+            </div>
+        </div>
+    </form>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-6xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between text-sm text-gray-500">
+            <p>© 2025 Test Case Manager. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-purple-600 transition-colors">Documentação</a>
+                <a href="#" class="hover:text-purple-600 transition-colors">Suporte</a>
+                <a href="#" class="hover:text-purple-600 transition-colors">API</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Inicializar ícones Feather
+    feather.replace();
+
+    // Tags Management
+    const tagInput = document.getElementById('tagInput');
+    const tagInputField = document.getElementById('tagInputField');
+    const tags = [];
+
+    tagInput.addEventListener('click', () => {
+      tagInputField.focus();
+    });
+
+    tagInputField.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && tagInputField.value.trim()) {
+        e.preventDefault();
+        const tagValue = tagInputField.value.trim();
+
+        if (!tags.includes(tagValue)) {
+          tags.push(tagValue);
+          addTagElement(tagValue);
+          tagInputField.value = '';
+          updateProgress();
+        }
+      }
+    });
+
+    function addTagElement(tagValue) {
+      const tagElement = document.createElement('div');
+      tagElement.className = 'tag';
+      tagElement.innerHTML = `
+        <span>${tagValue}</span>
+        <button type="button" onclick="removeTag('${tagValue}', this)">
+          <i data-feather="x" class="w-3 h-3"></i>
+        </button>
+      `;
+      tagInput.insertBefore(tagElement, tagInputField);
+      feather.replace();
+    }
+
+    function removeTag(tagValue, button) {
+      const index = tags.indexOf(tagValue);
+      if (index > -1) {
+        tags.splice(index, 1);
+      }
+      button.parentElement.remove();
+      updateProgress();
+    }
+
+    // Steps Management
+    const stepsContainer = document.getElementById('stepsContainer');
+    const addStepBtn = document.getElementById('addStepBtn');
+    let stepCount = 1;
+
+    addStepBtn.addEventListener('click', () => {
+      stepCount++;
+      const stepElement = document.createElement('div');
+      stepElement.className = 'step-item';
+      stepElement.innerHTML = `
+        <div class="step-number">${stepCount}</div>
+        <div class="flex gap-2">
+          <input
+            type="text"
+            placeholder="Descreva o passo do teste..."
+            class="form-input flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all step-input"
+          >
+          <button type="button" class="remove-step-btn p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all">
+            <i data-feather="trash-2" class="w-5 h-5"></i>
+          </button>
+        </div>
+      `;
+
+      stepsContainer.appendChild(stepElement);
+      feather.replace();
+      updateStepNumbers();
+      attachRemoveStepListeners();
+      updateProgress();
+    });
+
+    function attachRemoveStepListeners() {
+      document.querySelectorAll('.remove-step-btn').forEach(btn => {
+        btn.onclick = function() {
+          if (stepsContainer.children.length > 1) {
+            this.closest('.step-item').remove();
+            stepCount--;
+            updateStepNumbers();
+            updateProgress();
+          }
+        };
+      });
+    }
+
+    function updateStepNumbers() {
+      const steps = stepsContainer.querySelectorAll('.step-item');
+      steps.forEach((step, index) => {
+        step.querySelector('.step-number').textContent = index + 1;
+
+        // Mostrar/ocultar botão de remover
+        const removeBtn = step.querySelector('.remove-step-btn');
+        if (steps.length > 1) {
+          removeBtn.classList.remove('hidden');
+        } else {
+          removeBtn.classList.add('hidden');
+        }
+      });
+    }
+
+    // Progress Tracking
+    function updateProgress() {
+      const requiredFields = [
+        document.getElementById('testCaseId'),
+        document.getElementById('title'),
+        document.getElementById('category'),
+        document.getElementById('priority'),
+        document.getElementById('expectedResult')
+      ];
+
+      const stepInputs = document.querySelectorAll('.step-input');
+      const precondition = document.getElementById('precondition');
+
+      let filledFields = 0;
+      let totalFields = requiredFields.length + 2; // +2 for steps and precondition
+
+      // Check required fields
+      requiredFields.forEach(field => {
+        if (field.value.trim()) filledFields++;
+      });
+
+      // Check steps
+      let hasSteps = false;
+      stepInputs.forEach(input => {
+        if (input.value.trim()) hasSteps = true;
+      });
+      if (hasSteps) filledFields++;
+
+      // Check precondition
+      if (precondition.value.trim()) filledFields++;
+
+      // Add bonus for tags
+      if (tags.length > 0) {
+        filledFields += 0.5;
+        totalFields += 0.5;
+      }
+
+      const percentage = Math.round((filledFields / totalFields) * 100);
+
+      document.getElementById('progressPercent').textContent = `${percentage}%`;
+      document.getElementById('progressFill').style.width = `${percentage}%`;
+    }
+
+    // Add change listeners to all form fields
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('input', updateProgress);
+      field.addEventListener('change', updateProgress);
+    });
+
+    // Form Submission
+    const form = document.getElementById('testCaseForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Collect all data
+      const formData = {
+        id: document.getElementById('testCaseId').value,
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        category: document.getElementById('category').value,
+        priority: document.getElementById('priority').value,
+        tags: tags,
+        precondition: document.getElementById('precondition').value,
+        steps: Array.from(document.querySelectorAll('.step-input')).map(input => input.value).filter(v => v.trim()),
+        expectedResult: document.getElementById('expectedResult').value,
+        testData: document.getElementById('testData').value,
+        author: document.getElementById('author').value,
+        estimatedTime: document.getElementById('estimatedTime').value,
+        notes: document.getElementById('notes').value,
+        createdAt: new Date().toISOString()
+      };
+
+      console.log('Test Case Data:', formData);
+
+      // Show success message
+      alert('✅ Test Case criado com sucesso!');
+
+      // Redirect to list or detail page
+      window.location.href = 'list.html';
+    });
+
+    // Save Draft
+    document.getElementById('saveDraftBtn').addEventListener('click', () => {
+      const formData = {
+        id: document.getElementById('testCaseId').value,
+        title: document.getElementById('title').value,
+        status: 'draft',
+        savedAt: new Date().toISOString()
+      };
+
+      console.log('Draft saved:', formData);
+      alert('💾 Rascunho salvo com sucesso!');
+    });
+
+    // Templates
+    document.querySelectorAll('.template-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const template = this.dataset.template;
+        loadTemplate(template);
+      });
+    });
+
+    function loadTemplate(templateName) {
+      const templates = {
+        login: {
+          id: 'TC-AUTH-001',
+          title: 'Login com credenciais válidas',
+          category: 'funcional',
+          priority: 'alta',
+          tags: ['autenticação', 'login'],
+          precondition: 'Usuário já cadastrado no sistema',
+          steps: [
+            'Acessar a tela de login',
+            'Informar e-mail válido',
+            'Informar senha válida',
+            'Clicar no botão "Entrar"'
+          ],
+          expectedResult: 'O sistema autentica o usuário e redireciona para a tela principal',
+          testData: 'E-mail: usuario@exemplo.com\nSenha: senha123'
+        },
+        crud: {
+          id: 'TC-CRUD-001',
+          title: 'Criar novo registro',
+          category: 'funcional',
+          priority: 'alta',
+          tags: ['crud', 'criar'],
+          precondition: 'Usuário autenticado no sistema',
+          steps: [
+            'Acessar a tela de listagem',
+            'Clicar no botão "Novo"',
+            'Preencher os campos obrigatórios',
+            'Clicar em "Salvar"'
+          ],
+          expectedResult: 'Sistema cria o registro e exibe mensagem de sucesso'
+        },
+        form: {
+          id: 'TC-FORM-001',
+          title: 'Validação de campos obrigatórios',
+          category: 'interface',
+          priority: 'media',
+          tags: ['formulário', 'validação'],
+          precondition: 'Formulário carregado na tela',
+          steps: [
+            'Deixar campos obrigatórios em branco',
+            'Tentar submeter o formulário',
+            'Verificar mensagens de erro'
+          ],
+          expectedResult: 'Sistema exibe mensagens de erro indicando campos obrigatórios'
+        }
+      };
+
+      const template = templates[templateName];
+      if (template) {
+        document.getElementById('testCaseId').value = template.id;
+        document.getElementById('title').value = template.title;
+        document.getElementById('category').value = template.category;
+        document.getElementById('priority').value = template.priority;
+        document.getElementById('precondition').value = template.precondition;
+        document.getElementById('expectedResult').value = template.expectedResult;
+        if (template.testData) {
+          document.getElementById('testData').value = template.testData;
+        }
+
+        // Clear existing tags
+        tags.length = 0;
+        tagInput.querySelectorAll('.tag').forEach(tag => tag.remove());
+
+        // Add template tags
+        template.tags.forEach(tag => {
+          tags.push(tag);
+          addTagElement(tag);
+        });
+
+        // Clear existing steps and add template steps
+        stepsContainer.innerHTML = '';
+        stepCount = 0;
+        template.steps.forEach((step, index) => {
+          if (index === 0) {
+            stepCount = 1;
+            const stepElement = document.createElement('div');
+            stepElement.className = 'step-item';
+            stepElement.innerHTML = `
+              <div class="step-number">1</div>
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  value="${step}"
+                  placeholder="Descreva o passo do teste..."
+                  class="form-input flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all step-input"
+                >
+                <button type="button" class="remove-step-btn p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all hidden">
+                  <i data-feather="trash-2" class="w-5 h-5"></i>
+                </button>
+              </div>
+            `;
+            stepsContainer.appendChild(stepElement);
+          } else {
+            stepCount++;
+            const stepElement = document.createElement('div');
+            stepElement.className = 'step-item';
+            stepElement.innerHTML = `
+              <div class="step-number">${stepCount}</div>
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  value="${step}"
+                  placeholder="Descreva o passo do teste..."
+                  class="form-input flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all step-input"
+                >
+                <button type="button" class="remove-step-btn p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                  <i data-feather="trash-2" class="w-5 h-5"></i>
+                </button>
+              </div>
+            `;
+            stepsContainer.appendChild(stepElement);
+          }
+        });
+
+        feather.replace();
+        updateStepNumbers();
+        attachRemoveStepListeners();
+        updateProgress();
+
+        // Scroll to form
+        document.getElementById('testCaseForm').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Initialize
+    updateStepNumbers();
+    attachRemoveStepListeners();
+    updateProgress();
+</script>
+</body>
+</html>

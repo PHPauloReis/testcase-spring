@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cases - Listagem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+          font-family: 'Inter', sans-serif;
+        }
+
+        .header-gradient {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .test-case-card {
+          transition: all 0.3s ease;
+          cursor: pointer;
+          border: 2px solid transparent;
+        }
+
+        .test-case-card:hover {
+          border-color: #667eea;
+          box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.3);
+          transform: translateY(-2px);
+        }
+
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.375rem;
+          padding: 0.375rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .category-badge {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.625rem;
+          border-radius: 0.375rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.025em;
+        }
+
+        .section-card {
+          background: white;
+          border-radius: 1rem;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+          transition: box-shadow 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .fade-in {
+          animation: fadeIn 0.5s ease-out;
+        }
+
+        .search-input:focus {
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-chip {
+          transition: all 0.2s ease;
+          cursor: pointer;
+        }
+
+        .filter-chip:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-chip.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          box-shadow: 0 4px 12px -2px rgba(102, 126, 234, 0.5);
+        }
+
+        .pagination-btn {
+          transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: scale(1.05);
+        }
+
+        .pagination-btn.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        }
+
+        .pagination-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .status-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          display: inline-block;
+          margin-right: 0.5rem;
+        }
+
+        .bulk-action-bar {
+          position: fixed;
+          bottom: 2rem;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 50;
+          transition: all 0.3s ease;
+        }
+
+        .bulk-action-bar.hidden {
+          bottom: -100px;
+          opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<!-- Header -->
+<header class="header-gradient text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <i data-feather="clipboard" class="w-6 h-6"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold">Test Cases</h1>
+                </div>
+                <p class="text-blue-100 text-sm">Gerencie e visualize seus casos de teste</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-all flex items-center gap-2">
+                    <i data-feather="download" class="w-4 h-4"></i>
+                    <span>Exportar</span>
+                </button>
+                <button class="px-4 py-2 bg-white text-purple-700 hover:bg-purple-50 rounded-lg transition-all font-medium flex items-center gap-2">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                    <span>Novo Test Case</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Barra de Busca e Filtros -->
+    <div class="section-card p-6 mb-8 fade-in">
+        <!-- Busca -->
+        <div class="mb-6">
+            <div class="relative">
+                <i data-feather="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+                <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Buscar por ID, título, autor, tags..."
+                        class="search-input w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-all"
+                >
+            </div>
+        </div>
+
+        <!-- Filtros Rápidos -->
+        <div class="mb-6">
+            <div class="flex items-center gap-2 mb-3">
+                <i data-feather="filter" class="w-4 h-4 text-gray-600"></i>
+                <h3 class="text-sm font-semibold text-gray-700">Filtros Rápidos</h3>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button class="filter-chip px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium" data-filter="all">
+                    Todos
+                </button>
+                <button class="filter-chip px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium" data-filter="pending">
+                    <span class="status-indicator bg-yellow-500"></span>
+                    Pendente Revisão
+                </button>
+                <button class="filter-chip px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium" data-filter="approved">
+                    <span class="status-indicator bg-green-500"></span>
+                    Aprovados
+                </button>
+                <button class="filter-chip px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium" data-filter="rejected">
+                    <span class="status-indicator bg-red-500"></span>
+                    Rejeitados
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros Avançados -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                <select id="categoryFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 text-sm">
+                    <option value="">Todas</option>
+                    <option value="funcional">Funcional</option>
+                    <option value="interface">Interface</option>
+                    <option value="seguranca">Segurança</option>
+                    <option value="performance">Performance</option>
+                    <option value="integracao">Integração</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Prioridade</label>
+                <select id="priorityFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 text-sm">
+                    <option value="">Todas</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Média</option>
+                    <option value="baixa">Baixa</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Autor</label>
+                <select id="authorFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 text-sm">
+                    <option value="">Todos</option>
+                    <option value="joao">João Silva</option>
+                    <option value="maria">Maria Santos</option>
+                    <option value="pedro">Pedro Oliveira</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ordenar por</label>
+                <select id="sortFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 text-sm">
+                    <option value="newest">Mais Recentes</option>
+                    <option value="oldest">Mais Antigos</option>
+                    <option value="title">Título (A-Z)</option>
+                    <option value="priority">Prioridade</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Botão Limpar Filtros -->
+        <div class="mt-4 flex justify-end">
+            <button id="clearFilters" class="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1">
+                <i data-feather="x-circle" class="w-4 h-4"></i>
+                Limpar Filtros
+            </button>
+        </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+        <div class="section-card p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="clipboard" class="w-6 h-6 text-blue-600"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900">156</span>
+            </div>
+            <p class="text-sm text-gray-600">Total de Casos</p>
+        </div>
+        <div class="section-card p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="clock" class="w-6 h-6 text-yellow-600"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900">23</span>
+            </div>
+            <p class="text-sm text-gray-600">Pendente Revisão</p>
+        </div>
+        <div class="section-card p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="check-circle" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900">98</span>
+            </div>
+            <p class="text-sm text-gray-600">Aprovados</p>
+        </div>
+        <div class="section-card p-6">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i data-feather="trending-up" class="w-6 h-6 text-purple-600"></i>
+                </div>
+                <span class="text-2xl font-bold text-gray-900">+12</span>
+            </div>
+            <p class="text-sm text-gray-600">Esta Semana</p>
+        </div>
+    </div>
+
+    <!-- Lista de Test Cases -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <h2 class="text-xl font-bold text-gray-900">Test Cases</h2>
+                <span id="resultCount" class="text-sm text-gray-500">(156 resultados)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="viewGrid" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                    <i data-feather="grid" class="w-5 h-5 text-gray-600"></i>
+                </button>
+                <button id="viewList" class="p-2 bg-purple-100 rounded-lg transition-all">
+                    <i data-feather="list" class="w-5 h-5 text-purple-600"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="testCasesList" class="space-y-4 fade-in">
+            <!-- Test Case 1 -->
+            <div class="section-card test-case-card p-6" data-id="TC001" data-status="approved" data-category="funcional" data-priority="alta" data-author="joao">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC001</span>
+                                <span class="category-badge bg-green-100 text-green-700">Funcional</span>
+                                <span class="category-badge bg-purple-100 text-purple-700">Autenticação</span>
+                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">ALTA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Login com credenciais válidas</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Validar o processo de autenticação do usuário com credenciais corretas e verificar o redirecionamento para a tela principal.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>João Silva</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>10/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>3 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-green-500"></span>
+                                    <span class="font-medium text-green-600">Aprovado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 2 -->
+            <div class="section-card test-case-card p-6" data-id="TC002" data-status="pending" data-category="funcional" data-priority="alta" data-author="maria">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC002</span>
+                                <span class="category-badge bg-green-100 text-green-700">Funcional</span>
+                                <span class="category-badge bg-orange-100 text-orange-700">Validação</span>
+                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">ALTA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Login com credenciais inválidas</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Verificar comportamento do sistema ao tentar fazer login com senha incorreta e validar mensagem de erro.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>Maria Santos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>09/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>4 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-yellow-500"></span>
+                                    <span class="font-medium text-yellow-600">Pendente Revisão</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 3 -->
+            <div class="section-card test-case-card p-6" data-id="TC003" data-status="approved" data-category="interface" data-priority="media" data-author="pedro">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC003</span>
+                                <span class="category-badge bg-blue-100 text-blue-700">Interface</span>
+                                <span class="category-badge bg-pink-100 text-pink-700">Usabilidade</span>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-semibold">MÉDIA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Validação visual do campo senha</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Verificar se o campo de senha oculta os caracteres digitados e possui botão para visualizar/ocultar senha.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>Pedro Oliveira</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>08/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>5 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-green-500"></span>
+                                    <span class="font-medium text-green-600">Aprovado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-yellow-400 fill-current"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 4 -->
+            <div class="section-card test-case-card p-6" data-id="TC004" data-status="rejected" data-category="seguranca" data-priority="alta" data-author="joao">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC004</span>
+                                <span class="category-badge bg-red-100 text-red-700">Segurança</span>
+                                <span class="category-badge bg-purple-100 text-purple-700">Autenticação</span>
+                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-semibold">ALTA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Teste de SQL Injection no campo login</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Validar que o campo de login não é vulnerável a ataques de SQL Injection utilizando payloads comuns.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>João Silva</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>07/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>6 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-red-500"></span>
+                                    <span class="font-medium text-red-600">Rejeitado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 5 -->
+            <div class="section-card test-case-card p-6" data-id="TC005" data-status="pending" data-category="performance" data-priority="baixa" data-author="maria">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC005</span>
+                                <span class="category-badge bg-indigo-100 text-indigo-700">Performance</span>
+                                <span class="category-badge bg-cyan-100 text-cyan-700">Tempo de Resposta</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-semibold">BAIXA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Tempo de resposta do login</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Verificar se o processo de autenticação é concluído em menos de 2 segundos em condições normais.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>Maria Santos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>06/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>3 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-yellow-500"></span>
+                                    <span class="font-medium text-yellow-600">Pendente Revisão</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 6 -->
+            <div class="section-card test-case-card p-6" data-id="TC006" data-status="approved" data-category="integracao" data-priority="media" data-author="pedro">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-start gap-4 flex-1">
+                        <input type="checkbox" class="mt-1 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm font-bold text-purple-600">TC006</span>
+                                <span class="category-badge bg-teal-100 text-teal-700">Integração</span>
+                                <span class="category-badge bg-purple-100 text-purple-700">API</span>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-semibold">MÉDIA</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Integração com API de autenticação externa</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">Validar a integração com serviço de autenticação OAuth2 e verificar o fluxo de tokens.</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="user" class="w-3 h-3"></i>
+                                    <span>Pedro Oliveira</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="calendar" class="w-3 h-3"></i>
+                                    <span>05/11/2025</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <i data-feather="list" class="w-3 h-3"></i>
+                                    <span>7 passos</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="status-indicator bg-green-500"></span>
+                                    <span class="font-medium text-green-600">Aprovado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Favoritar">
+                            <i data-feather="star" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Duplicar">
+                            <i data-feather="copy" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                        <button class="p-2 hover:bg-gray-100 rounded-lg transition-all" title="Mais opções">
+                            <i data-feather="more-vertical" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginação -->
+    <div class="section-card p-4 flex items-center justify-between">
+        <div class="text-sm text-gray-600">
+            Mostrando <span class="font-semibold">1-6</span> de <span class="font-semibold">156</span> resultados
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="pagination-btn px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700" disabled>
+                <i data-feather="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <button class="pagination-btn active px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">1</button>
+            <button class="pagination-btn px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">2</button>
+            <button class="pagination-btn px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">3</button>
+            <span class="px-2 text-gray-500">...</span>
+            <button class="pagination-btn px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">26</button>
+            <button class="pagination-btn px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700">
+                <i data-feather="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div>
+            <select class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-500">
+                <option value="6">6 por página</option>
+                <option value="12">12 por página</option>
+                <option value="24">24 por página</option>
+                <option value="50">50 por página</option>
+            </select>
+        </div>
+    </div>
+</main>
+
+<!-- Barra de Ações em Massa (aparece quando há itens selecionados) -->
+<div id="bulkActionBar" class="bulk-action-bar hidden section-card p-4 flex items-center gap-4 shadow-2xl">
+    <span class="text-sm font-medium text-gray-700"><span id="selectedCount">0</span> itens selecionados</span>
+    <div class="flex gap-2">
+        <button class="px-4 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg transition-all text-sm font-medium flex items-center gap-2">
+            <i data-feather="check" class="w-4 h-4"></i>
+            Aprovar
+        </button>
+        <button class="px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-all text-sm font-medium flex items-center gap-2">
+            <i data-feather="x" class="w-4 h-4"></i>
+            Rejeitar
+        </button>
+        <button class="px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-all text-sm font-medium flex items-center gap-2">
+            <i data-feather="tag" class="w-4 h-4"></i>
+            Adicionar Tag
+        </button>
+        <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-all text-sm font-medium flex items-center gap-2">
+            <i data-feather="download" class="w-4 h-4"></i>
+            Exportar
+        </button>
+    </div>
+    <button id="clearSelection" class="ml-auto p-2 hover:bg-gray-100 rounded-lg transition-all">
+        <i data-feather="x" class="w-5 h-5 text-gray-500"></i>
+    </button>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between text-sm text-gray-500">
+            <p>© 2025 Test Case Manager. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-purple-600 transition-colors">Documentação</a>
+                <a href="#" class="hover:text-purple-600 transition-colors">Suporte</a>
+                <a href="#" class="hover:text-purple-600 transition-colors">API</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Inicializar ícones Feather
+    feather.replace();
+
+    // Elementos do DOM
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const priorityFilter = document.getElementById('priorityFilter');
+    const authorFilter = document.getElementById('authorFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const testCaseCards = document.querySelectorAll('.test-case-card');
+    const checkboxes = document.querySelectorAll('.test-case-card input[type="checkbox"]');
+    const bulkActionBar = document.getElementById('bulkActionBar');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    const clearSelectionBtn = document.getElementById('clearSelection');
+    const resultCountSpan = document.getElementById('resultCount');
+
+    // Estado atual dos filtros
+    let currentFilters = {
+      search: '',
+      status: 'all',
+      category: '',
+      priority: '',
+      author: '',
+      sort: 'newest'
+    };
+
+    // Função de busca e filtro
+    function applyFilters() {
+      let visibleCount = 0;
+
+      testCaseCards.forEach(card => {
+        const cardData = {
+          id: card.dataset.id.toLowerCase(),
+          status: card.dataset.status.toLowerCase(),
+          category: card.dataset.category.toLowerCase(),
+          priority: card.dataset.priority.toLowerCase(),
+          author: card.dataset.author.toLowerCase(),
+          title: card.querySelector('h3').textContent.toLowerCase(),
+          description: card.querySelector('p').textContent.toLowerCase()
+        };
+
+        let shouldShow = true;
+
+        // Filtro de busca
+        if (currentFilters.search) {
+          const searchTerm = currentFilters.search.toLowerCase();
+          shouldShow = cardData.id.includes(searchTerm) ||
+                      cardData.title.includes(searchTerm) ||
+                      cardData.description.includes(searchTerm);
+        }
+
+        // Filtro de status
+        if (shouldShow && currentFilters.status !== 'all') {
+          shouldShow = cardData.status === currentFilters.status;
+        }
+
+        // Filtro de categoria
+        if (shouldShow && currentFilters.category) {
+          shouldShow = cardData.category === currentFilters.category;
+        }
+
+        // Filtro de prioridade
+        if (shouldShow && currentFilters.priority) {
+          shouldShow = cardData.priority === currentFilters.priority;
+        }
+
+        // Filtro de autor
+        if (shouldShow && currentFilters.author) {
+          shouldShow = cardData.author === currentFilters.author;
+        }
+
+        // Mostrar/ocultar card
+        if (shouldShow) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Atualizar contador de resultados
+      resultCountSpan.textContent = `(${visibleCount} resultado${visibleCount !== 1 ? 's' : ''})`;
+    }
+
+    // Event listeners para busca
+    searchInput.addEventListener('input', (e) => {
+      currentFilters.search = e.target.value;
+      applyFilters();
+    });
+
+    // Event listeners para filtros
+    categoryFilter.addEventListener('change', (e) => {
+      currentFilters.category = e.target.value;
+      applyFilters();
+    });
+
+    priorityFilter.addEventListener('change', (e) => {
+      currentFilters.priority = e.target.value;
+      applyFilters();
+    });
+
+    authorFilter.addEventListener('change', (e) => {
+      currentFilters.author = e.target.value;
+      applyFilters();
+    });
+
+    // Event listeners para chips de filtro rápido
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', function() {
+        // Remover active de todos os chips
+        filterChips.forEach(c => c.classList.remove('active'));
+        // Adicionar active ao chip clicado
+        this.classList.add('active');
+        // Atualizar filtro
+        currentFilters.status = this.dataset.filter;
+        applyFilters();
+      });
+    });
+
+    // Limpar filtros
+    clearFiltersBtn.addEventListener('click', () => {
+      currentFilters = {
+        search: '',
+        status: 'all',
+        category: '',
+        priority: '',
+        author: '',
+        sort: 'newest'
+      };
+
+      searchInput.value = '';
+      categoryFilter.value = '';
+      priorityFilter.value = '';
+      authorFilter.value = '';
+      sortFilter.value = 'newest';
+
+      filterChips.forEach(c => c.classList.remove('active'));
+      filterChips[0].classList.add('active');
+
+      applyFilters();
+    });
+
+    // Navegação para detalhes do test case
+    testCaseCards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        // Não navegar se clicar em checkbox ou botões de ação
+        if (e.target.type === 'checkbox' || e.target.closest('button')) {
+          return;
+        }
+
+        const testCaseId = this.dataset.id;
+        // Simular navegação (substituir com navegação real)
+        window.location.href = `index.html?id=${testCaseId}`;
+      });
+    });
+
+    // Gerenciamento de seleção em massa
+    let selectedCount = 0;
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function(e) {
+        e.stopPropagation();
+
+        if (this.checked) {
+          selectedCount++;
+        } else {
+          selectedCount--;
+        }
+
+        selectedCountSpan.textContent = selectedCount;
+
+        if (selectedCount > 0) {
+          bulkActionBar.classList.remove('hidden');
+        } else {
+          bulkActionBar.classList.add('hidden');
+        }
+      });
+    });
+
+    // Limpar seleção
+    clearSelectionBtn.addEventListener('click', () => {
+      checkboxes.forEach(cb => cb.checked = false);
+      selectedCount = 0;
+      bulkActionBar.classList.add('hidden');
+    });
+
+    // Adicionar primeiro chip como ativo por padrão
+    filterChips[0].classList.add('active');
+
+    // Atualizar ícones após manipulação do DOM
+    setTimeout(() => {
+      feather.replace();
+    }, 100);
+</script>
+</body>
+</html>
