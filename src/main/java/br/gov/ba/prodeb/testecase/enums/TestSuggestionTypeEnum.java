@@ -3,19 +3,19 @@ package br.gov.ba.prodeb.testecase.enums;
 import lombok.Getter;
 
 @Getter
-public enum TestSuggestionType {
+public enum TestSuggestionTypeEnum {
 
-    VALIDATION_ACCESS("Validação de Acesso"),
+    ACCESS_VALIDATION("Validação de Acesso"),
     BUSSINESS_RULE("Regra de Negócio"),
     FUNCTIONALITY("Funcionalidade"),
     INTEGRATION("Integração"),
     VALIDATION("Validação"),
     COMPATIBILITY("Compatibilidade"),
-    COMPLETO_FUNCTIONALITY("Funcionalidade Completa");
+    COMPLETE_FUNCTIONALITY("Funcionalidade Completa");
 
     private final String description;
 
-    TestSuggestionType(String description) {
+    TestSuggestionTypeEnum(String description) {
         this.description = description;
     }
 

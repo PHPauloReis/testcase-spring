@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,12 +142,14 @@
         <div class="flex items-center justify-between">
             <div>
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                        <i data-feather="clipboard" class="w-6 h-6"></i>
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <i data-feather="clipboard" class="w-8 h-8"></i>
                     </div>
-                    <h1 class="text-3xl font-bold">Test Case Viewer</h1>
+                    <div class="flex flex-col">
+                        <h1 class="text-3xl font-bold">Test Case Manager</h1>
+                        <p class="text-blue-100 text-sm">Visualização detalhada de casos de teste</p>
+                    </div>
                 </div>
-                <p class="text-blue-100 text-sm">Visualização detalhada de casos de teste</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="window.location.href='list.html'" class="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-all flex items-center gap-2">
@@ -175,24 +177,25 @@
         <div class="flex items-start justify-between mb-6">
             <div class="flex-1">
                 <div class="flex items-center gap-3 mb-3">
-                    <span class="badge badge-primary">TC-AGD-001</span>
-                    <span class="category-badge bg-green-100 text-green-700">Funcional</span>
-                    <span class="category-badge bg-purple-100 text-purple-700">Agendamento</span>
-                    <span class="category-badge bg-blue-100 text-blue-700">Portal</span>
+                    <span
+                        th:class="'category-badge bg-' + ${tag.color} + '-100 text-' + ${tag.color} + '-700'"
+                        th:each="tag : ${testCase.getTags()}"
+                        th:text="${tag}"
+                    ></span>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Agendamento de serviço</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2" th:text="${testCase.title}"></h2>
                 <div class="flex items-center gap-4 text-sm text-gray-500">
                     <div class="flex items-center gap-1">
                         <i data-feather="user" class="w-4 h-4"></i>
-                        <span>Criado por: Equipe QA</span>
+                        <span th:text="'Criado por: ' + ${testCase.author.name}"></span>
                     </div>
                     <div class="flex items-center gap-1">
                         <i data-feather="calendar" class="w-4 h-4"></i>
-                        <span>10/11/2025</span>
+                        <span th:text="${#dates.format(testCase.createdAt, 'dd/MM/yyyy')}"></span>
                     </div>
                     <div class="flex items-center gap-1">
                         <i data-feather="clock" class="w-4 h-4"></i>
-                        <span>Última atualização: hoje</span>
+                        <span th:text="'Última atualização: ' + ${#dates.format(testCase.updatedAt, 'dd/MM/yyyy')}"></span>
                     </div>
                 </div>
             </div>
@@ -217,12 +220,12 @@
                 <h3 class="text-lg font-semibold text-gray-900">Pré-condição</h3>
             </div>
             <div class="ml-10 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                <p class="text-gray-700">O cidadão deve estar logado na plataforma ba.gov.br</p>
+                <p class="text-gray-700" th:text="${testCase.preCondition}"></p>
             </div>
         </div>
 
         <!-- Passos -->
-        <div class="mb-8">
+        <div class="mb-8" th:if="(${testCase.testSteps} != null)">
             <div class="flex items-center gap-2 mb-4">
                 <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                     <i data-feather="list" class="w-4 h-4 text-purple-600"></i>
@@ -230,64 +233,10 @@
                 <h3 class="text-lg font-semibold text-gray-900">Passos do Teste</h3>
             </div>
             <div class="ml-10">
-                <div class="test-step">
-                    <div class="step-number">1</div>
+                <div class="test-step" th:each="step, iterStat : ${testCase.testSteps}">
+                    <div class="step-number" th:text="${iterStat.index + 1}"></div>
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">Acessar portal ba.gov.br e escolher um dos serviços disponíveis</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">2</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">Na tela de "Solicitar Serviço", clicar em "Agendar"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">3</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">No modal que será apresentado com o histórico de agendamento do cidadão para aquele serviço, marcar o checkbox com o label "Li os documentos necessários ao atendimento" e clicar na opção "Posto"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">4</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema apresentará a tela com postos disponíveis para agendamento. Escolher o posto e clicar no botão "Próximo"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">5</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema apresentará a tela com datas disponíveis para agendamento. Escolher a data e clicar no botão "Próximo"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">6</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema apresentará a tela com horários disponíveis para agendamento. Escolher o horário e clicar no botão "Próximo"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">7</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema apresentará a tela de confirmação com os dados selecionados pelo cidadão. Clicar em "Agendar"</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">8</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema apresentará um Modal com os dados do agendamento, confirmando o agendamento</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">9</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">O sistema disparará um E-mail e uma mensagem SMS para o cidadão</p>
-                    </div>
-                </div>
-                <div class="test-step">
-                    <div class="step-number">10</div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p class="text-gray-800 font-medium">Clicar no botão "Fechar"</p>
+                        <p class="text-gray-800 font-medium" th:text="${step}"></p>
                     </div>
                 </div>
             </div>
@@ -302,13 +251,13 @@
                 <h3 class="text-lg font-semibold text-gray-900">Resultado Esperado</h3>
             </div>
             <div class="ml-10 p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
-                <p class="text-gray-700">O sistema deve confirmar o agendamento e enviar SMS e E-mail para o cidadão</p>
+                <p class="text-gray-700" th:text="${testCase.expectedResult}"></p>
             </div>
         </div>
     </div>
 
     <!-- Sugestões de Testes -->
-    <div class="fade-in">
+    <div class="fade-in" th:if="${testCase.testSuggestions != null and #lists.size(testCase.testSuggestions) > 0}">
         <div class="flex items-center gap-3 mb-6">
             <i data-feather="lightbulb" class="w-6 h-6 text-yellow-500"></i>
             <h2 class="text-2xl font-bold text-gray-900">Sugestões de Testes Relacionados</h2>
